@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center py-4">
+  <div class="col-lg-5 col-md-7">
+    <div class="medical-card p-4 p-lg-5">
+      <span class="badge rounded-pill bg-info-subtle text-info-emphasis mb-3">Create account</span>
+      <h2 class="mb-2">Start your medical AI journey</h2>
+      <p class="text-light-emphasis mb-4">Register to upload retinal images, review reports, and track your analysis history.</p>
+      <form method="post" novalidate>
+        <div class="mb-3">
+          <label class="form-label text-light fw-semibold" for="username">Username</label>
+          <input id="username" type="text" class="form-control form-control-lg text-dark" name="username" minlength="3" placeholder="At least 3 characters" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label text-light fw-semibold" for="email">Email address</label>
+          <input id="email" type="email" class="form-control form-control-lg text-dark" name="email" placeholder="name@example.com" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label text-light fw-semibold" for="password">Password</label>
+          <input id="password" type="password" class="form-control form-control-lg text-dark" name="password" minlength="8" placeholder="At least 8 characters" required>
+        </div>
+        <button class="btn btn-primary btn-lg w-100" type="submit">Register</button>
+        <p class="small text-light-emphasis mt-3">Already have an account? <a class="text-info" href="{{ url_for('login') }}">Sign in</a>.</p>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

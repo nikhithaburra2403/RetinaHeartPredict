@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="medical-card p-4 p-lg-5">
+    <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
+      <div>
+        <span class="badge rounded-pill bg-info-subtle text-info-emphasis mb-2">Prediction History</span>
+        <h2 class="mb-1">Review your saved retinal analyses</h2>
+        <p class="text-light-emphasis mb-0">Search, filter, and open any saved report in one place.</p>
+      </div>
+      <a class="btn btn-primary" href="{{ url_for('upload') }}">Run New Prediction</a>
+    </div>
+
+    <form class="row g-3 mb-4" method="get" action="{{ url_for('history') }}">
+      <div class="col-md-6">
+        <label class="form-label" for="query">Search predictions</label>
+        <input class="form-control" id="query" name="q" type="search" value="{{ query }}" placeholder="Search by result or image name">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="result">Filter by result</label>
+        <select class="form-select" id="result" name="result">
+          <option value="all" {% if selected_result == 'all' %}selected{% endif %}>All results</option>
+          {% for value in result_options %}
+          <option value="{{ value }}" {% if selected_result == value %}selected{% endif %}>{{ value }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2 d-flex align-items-end">
+        <button class="btn btn-outline-light w-100" type="submit">Apply</button>
+      </div>
+    </form>
+
+    {% if records %}
+      <div class="table-responsive">
+        <table class="table table-hover align-middle text-light-emphasis mb-0">
+          <thead>
+            <tr>
+              <th scope="col">Result</th>
+              <th scope="col">Confidence</th>
+              <th scope="col">Image</th>
+              <th scope="col">Saved</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for record in records %}
+            <tr>
+              <td>
+                <strong>{{ record.result }}</strong>
+                <div class="small text-muted">Prediction #{{ record.id }}</div>
+              </td>
+              <td>{{ '%.2f'|format((record.confidence or 0) * 100) }}%</td>
+              <td>{{ record.image_path }}</td>
+              <td>{{ record.created_at.strftime('%Y-%m-%d %H:%M') if record.created_at else 'N/A' }}</td>
+              <td>
+                <a class="btn btn-sm btn-outline-info me-2" href="{{ url_for('prediction_detail', prediction_id=record.id) }}">View</a>
+                <a class="btn btn-sm btn-outline-primary" href="{{ url_for('download_report', prediction_id=record.id) }}">PDF</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="alert alert-info mb-3" role="alert">No predictions yet for this account. Upload a retinal image to begin building your history.</div>
+    {% endif %}
+
+    <nav class="mt-4" aria-label="Prediction history pagination">
+      <ul class="pagination mb-0">
+        <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+          <a class="page-link" href="{{ url_for('history', page=pagination.page-1, q=query, result=selected_result) if pagination.has_prev else '#' }}">Previous</a>
+        </li>
+        {% for page_num in range(1, pagination.pages + 1) %}
+        <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+          <a class="page-link" href="{{ url_for('history', page=page_num, q=query, result=selected_result) }}">{{ page_num }}</a>
+        </li>
+        {% endfor %}
+        <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+          <a class="page-link" href="{{ url_for('history', page=pagination.page+1, q=query, result=selected_result) if pagination.has_next else '#' }}">Next</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
+{% endblock %}

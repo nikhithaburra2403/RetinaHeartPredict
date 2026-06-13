@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row g-4 align-items-start">
+    <div class="col-lg-7">
+      <div class="medical-card p-4 p-lg-5">
+        <h2 class="mb-3">Upload Retinal Image</h2>
+        <p class="text-light-emphasis">Upload a JPG, JPEG, or PNG retinal image for analysis. The file is validated for type and size before it is stored in the uploads folder.</p>
+
+        <form method="post" enctype="multipart/form-data" class="mt-3" id="uploadForm">
+          <div class="mb-3">
+            <label class="form-label">Choose retinal image</label>
+            <input type="file" class="form-control" name="image" id="imageInput" accept=".jpg,.jpeg,.png" required>
+            <div class="form-text text-light-emphasis">Maximum file size: 5 MB</div>
+          </div>
+          <button class="btn btn-primary" type="submit">Upload & Analyze</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="medical-card p-4">
+        <h4 class="mb-3">Preview</h4>
+        <div id="previewBox" class="border rounded p-3 text-center text-light-emphasis" style="min-height: 220px; background: rgba(15,23,42,0.8);">
+          {% if preview_url %}
+            <img src="{{ preview_url }}" alt="Uploaded retinal image preview" class="img-fluid rounded" style="max-height: 260px;">
+          {% else %}
+            <p class="mb-0">Your image preview will appear here after selection.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const imageInput = document.getElementById('imageInput');
+  const previewBox = document.getElementById('previewBox');
+
+  imageInput.addEventListener('change', function () {
+    const file = this.files[0];
+    if (!file) {
+      previewBox.innerHTML = '<p class="mb-0">Your image preview will appear here after selection.</p>';
+      return;
+    }
+
+    const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    if (!validTypes.includes(file.type)) {
+      previewBox.innerHTML = '<p class="text-danger mb-0">Please select a valid JPG, JPEG, or PNG image.</p>';
+      this.value = '';
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      previewBox.innerHTML = '<p class="text-danger mb-0">File is too large. Maximum allowed size is 5 MB.</p>';
+      this.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      previewBox.innerHTML = '<img src="' + e.target.result + '" alt="Retinal image preview" class="img-fluid rounded" style="max-height: 260px;">';
+    };
+    reader.readAsDataURL(file);
+  });
+</script>
+{% endblock %}

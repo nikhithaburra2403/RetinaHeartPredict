@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section id="hero" class="container py-4">
+  <div class="row align-items-center g-4">
+    <div class="col-lg-7">
+      <div class="medical-card hero-panel p-4 p-lg-5">
+        <span class="badge rounded-pill bg-info-subtle text-info-emphasis mb-3">Clinical AI • Medical Imaging</span>
+        <h1 class="display-5 fw-bold mb-3">Advanced retinal analysis for faster cardiovascular risk insight.</h1>
+        <p class="lead text-light-emphasis">RetinaHeartPredict combines CNN-based retinal image feature extraction, logistic regression classification, and secure clinical workflows into a responsive medical AI platform.</p>
+        <div class="d-flex flex-wrap gap-3 mt-4">
+          <a class="btn btn-primary btn-lg" href="{{ url_for('upload') }}">Start Assessment</a>
+          <a class="btn btn-outline-light btn-lg" href="#about">Explore Platform</a>
+        </div>
+        <div class="row g-3 mt-4 text-center text-lg-start">
+          <div class="col-sm-4"><div class="mini-stat">98.4%<small>Model Confidence</small></div></div>
+          <div class="col-sm-4"><div class="mini-stat">24/7<small>Secure Access</small></div></div>
+          <div class="col-sm-4"><div class="mini-stat">AI + Clinician<small>Decision Support</small></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="medical-card p-4">
+        <h4 class="mb-3">Why RetinaHeartPredict</h4>
+        <ul class="list-unstyled medical-list">
+          <li><strong>Fast triage</strong> for retinal image review</li>
+          <li><strong>Explainable AI</strong> with prediction history</li>
+          <li><strong>Responsive UI</strong> for clinicians and patients</li>
+          <li><strong>Secure workflow</strong> with user authentication</li>
+        </ul>
+        <div class="alert alert-success mb-0">Designed for research, demo, and future clinical deployment.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about" class="container py-5">
+  <div class="medical-card p-4 p-lg-5">
+    <div class="row g-4 align-items-center">
+      <div class="col-lg-6">
+        <span class="badge rounded-pill bg-primary-subtle text-primary-emphasis mb-3">About the Project</span>
+        <h2 class="mb-3">A medical AI platform for retinal image analysis</h2>
+        <p class="text-light-emphasis">RetinaHeartPredict is a full-stack Flask application built to demonstrate how image preprocessing, CNN-based feature extraction, and logistic regression can support cardiovascular risk screening from retinal images.</p>
+        <p class="text-light-emphasis">The interface is designed for accessibility, responsiveness, and clear clinical communication, with authentication, prediction history, and admin oversight in place.</p>
+      </div>
+      <div class="col-lg-6">
+        <div class="row g-3">
+          <div class="col-6"><div class="medical-card p-3"><h5>Image Upload</h5><p class="small text-light-emphasis">Secure retinal image intake.</p></div></div>
+          <div class="col-6"><div class="medical-card p-3"><h5>Preprocessing</h5><p class="small text-light-emphasis">Resize, normalize, and prepare image input.</p></div></div>
+          <div class="col-6"><div class="medical-card p-3"><h5>Feature Extraction</h5><p class="small text-light-emphasis">CNN-driven representation learning.</p></div></div>
+          <div class="col-6"><div class="medical-card p-3"><h5>Classification</h5><p class="small text-light-emphasis">Logistic regression for prediction output.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how-it-works" class="container py-5">
+  <h2 class="section-title">How It Works</h2>
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="medical-card p-4 h-100">
+        <div class="feature-icon">1</div>
+        <h4>Upload</h4>
+        <p class="text-light-emphasis">Users upload retinal images through a responsive and intuitive interface.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="medical-card p-4 h-100">
+        <div class="feature-icon">2</div>
+        <h4>Analyze</h4>
+        <p class="text-light-emphasis">The system applies preprocessing and CNN feature extraction to generate meaningful image embeddings.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="medical-card p-4 h-100">
+        <div class="feature-icon">3</div>
+        <h4>Predict</h4>
+        <p class="text-light-emphasis">A logistic regression model classifies the image and renders a clear result with confidence.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features" class="container py-5">
+  <h2 class="section-title">Platform Features</h2>
+  <div class="row g-4">
+    <div class="col-md-6 col-lg-4"><article class="medical-card p-4 h-100"><h5>User Authentication</h5><p class="text-light-emphasis">Secure signup and login workflow for patients and clinicians.</p></article></div>
+    <div class="col-md-6 col-lg-4"><article class="medical-card p-4 h-100"><h5>Prediction History</h5><p class="text-light-emphasis">Track prior results and revisit analysis in one place.</p></article></div>
+    <div class="col-md-6 col-lg-4"><article class="medical-card p-4 h-100"><h5>Admin Dashboard</h5><p class="text-light-emphasis">Monitor users, predictions, and platform usage.</p></article></div>
+    <div class="col-md-6 col-lg-4"><article class="medical-card p-4 h-100"><h5>Responsive Design</h5><p class="text-light-emphasis">Adaptive layout for desktop, tablet, and mobile screens.</p></article></div>
+    <div class="col-md-6 col-lg-4"><article class="medical-card p-4 h-100"><h5>Medical Theme</h5><p class="text-light-emphasis">A modern, clean interface tailored to healthcare applications.</p></article></div>
+    <div class="col-md-6 col-lg-4"><article class="medical-card p-4 h-100"><h5>Future AI Expansion</h5><p class="text-light-emphasis">Built to scale into richer diagnosis and research pipelines.</p></article></div>
+  </div>
+</section>
+
+<section id="team" class="container py-5">
+  <h2 class="section-title">Our Team</h2>
+  <div class="row g-4">
+    <div class="col-md-4"><article class="medical-card p-4 text-center"><div class="team-avatar">AI</div><h5>Medical AI Lead</h5><p class="text-light-emphasis">Leads model strategy, retinal imaging pipelines, and clinical-grade design.</p></article></div>
+    <div class="col-md-4"><article class="medical-card p-4 text-center"><div class="team-avatar">ML</div><h5>ML Engineer</h5><p class="text-light-emphasis">Builds and validates CNN and logistic regression workflows.</p></article></div>
+    <div class="col-md-4"><article class="medical-card p-4 text-center"><div class="team-avatar">UX</div><h5>Product & UX</h5><p class="text-light-emphasis">Ensures a clean, responsive, and trustworthy medical experience.</p></article></div>
+  </div>
+</section>
+
+<section id="contact" class="container py-5">
+  <div class="medical-card p-4 p-lg-5">
+    <div class="row g-4 align-items-center">
+      <div class="col-lg-6">
+        <span class="badge rounded-pill bg-info-subtle text-info-emphasis mb-3">Contact</span>
+        <h2 class="mb-3">Get in touch for collaboration or demos</h2>
+        <p class="text-light-emphasis">Whether you are exploring a prototype or planning a clinical deployment, RetinaHeartPredict is designed to support communication, analysis, and future extension.</p>
+      </div>
+      <div class="col-lg-6">
+        <div class="medical-card p-4">
+          <h5>Reach us</h5>
+          <p class="mb-2"><strong>Location:</strong> Hyderabad, Telangana, India</p>
+          <p class="mb-2"><strong>Email:</strong> csd23750026@matrusri.edu.in</p>
+          <p class="mb-0"><strong>Contact:</strong> Medical AI collaboration and demo support</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

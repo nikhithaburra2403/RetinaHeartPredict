@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="medical-card p-4 p-lg-5">
+    <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
+      <div>
+        <span class="badge rounded-pill bg-info-subtle text-info-emphasis mb-2">Admin Dashboard</span>
+        <h2 class="mb-1">RetinaHeartPredict operations overview</h2>
+        <p class="text-light-emphasis mb-0">Track utilization, confidence trends, and the latest uploads from one place.</p>
+      </div>
+      <span class="badge bg-success-subtle text-success-emphasis">Powered by Chart.js</span>
+    </div>
+
+    <div class="row g-4 mb-4">
+      <div class="col-md-6 col-xl-3">
+        <div class="medical-card p-3 h-100">
+          <div class="text-muted small">Total Users</div>
+          <h3 class="mt-2 mb-0">{{ total_users }}</h3>
+          <p class="text-light-emphasis small mb-0">Registered account holders</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-xl-3">
+        <div class="medical-card p-3 h-100">
+          <div class="text-muted small">Total Predictions</div>
+          <h3 class="mt-2 mb-0">{{ total_predictions }}</h3>
+          <p class="text-light-emphasis small mb-0">Saved retinal analyses</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-xl-3">
+        <div class="medical-card p-3 h-100">
+          <div class="text-muted small">Model Accuracy</div>
+          <h3 class="mt-2 mb-0">{{ model_accuracy }}%</h3>
+          <p class="text-light-emphasis small mb-0">Average confidence score</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-xl-3">
+        <div class="medical-card p-3 h-100">
+          <div class="text-muted small">Recent Uploads</div>
+          <h3 class="mt-2 mb-0">{{ recent_uploads|length }}</h3>
+          <p class="text-light-emphasis small mb-0">Latest image submissions</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+      <div class="col-lg-8">
+        <div class="medical-card p-4 h-100">
+          <h4 class="mb-3">Prediction Statistics</h4>
+          <canvas id="predictionChart" width="100" height="140"></canvas>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="medical-card p-4 h-100">
+          <h4 class="mb-3">Recent Uploads</h4>
+          <ul class="list-group list-group-flush">
+            {% for item in recent_activity %}
+            <li class="list-group-item bg-transparent text-light-emphasis border-secondary">
+              <strong>{{ item.result }}</strong>
+              <div class="small text-muted">{{ item.image_path }} • {{ item.created_at.strftime('%Y-%m-%d %H:%M') if item.created_at else 'N/A' }}</div>
+            </li>
+            {% else %}
+            <li class="list-group-item bg-transparent text-light-emphasis">No uploads recorded yet.</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-7">
+        <div class="medical-card p-4 h-100">
+          <h4 class="mb-3">User Management</h4>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle text-light-emphasis mb-0">
+              <thead>
+                <tr>
+                  <th scope="col">User</th>
+                  <th scope="col">Role</th>
+                  <th scope="col">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for user in users %}
+                <tr>
+                  <td>
+                    <strong>{{ user.username }}</strong>
+                    <div class="small text-muted">{{ user.email }}</div>
+                  </td>
+                  <td><span class="badge bg-info-subtle text-info-emphasis">{{ user.role or 'user' }}</span></td>
+                  <td><span class="badge bg-success-subtle text-success-emphasis">Active</span></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="medical-card p-4 h-100">
+          <h4 class="mb-3">Prediction Summary</h4>
+          <canvas id="riskBreakdown" width="100" height="180"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+  const predictionCtx = document.getElementById('predictionChart');
+  if (predictionCtx) {
+    new Chart(predictionCtx, {
+      type: 'line',
+      data: {
+        labels: ['Healthy', 'At Risk'],
+        datasets: [{
+          label: 'Prediction Count',
+          data: [{{ healthy_count }}, {{ at_risk_count }}],
+          borderColor: '#38bdf8',
+          backgroundColor: 'rgba(56, 189, 248, 0.2)',
+          tension: 0.35,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { labels: { color: '#e5eefb' } } },
+        scales: { x: { ticks: { color: '#cbd5e1' } }, y: { ticks: { color: '#cbd5e1' }, beginAtZero: true } }
+      }
+    });
+  }
+
+  const breakdownCtx = document.getElementById('riskBreakdown');
+  if (breakdownCtx) {
+    new Chart(breakdownCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Healthy', 'At Risk'],
+        datasets: [{
+          data: [{{ healthy_count }}, {{ at_risk_count }}],
+          backgroundColor: ['#22c55e', '#ef4444'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { labels: { color: '#e5eefb' } } }
+      }
+    });
+  }
+</script>
+{% endblock %}

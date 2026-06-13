@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="medical-card p-4 p-lg-5">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+          <div>
+            <span class="badge rounded-pill bg-info-subtle text-info-emphasis mb-2">Prediction Dashboard</span>
+            <h2 class="mb-2">Retinal Risk Assessment</h2>
+            <p class="text-light-emphasis mb-0">Review the uploaded retinal image, model confidence, and recommended next actions.</p>
+          </div>
+          <button class="btn btn-primary">Download Report</button>
+        </div>
+
+        <div class="row g-4 mt-3">
+          <div class="col-md-6">
+            <div class="medical-card p-3 h-100">
+              <h5 class="mb-3">Uploaded Image</h5>
+              <img src="{{ preview_url or url_for('static', filename='uploads/default-retina.png') }}" class="img-fluid rounded" alt="Retinal image result">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="medical-card p-3 h-100">
+              <h5 class="mb-3">Prediction Summary</h5>
+              <p class="mb-1"><strong>Result:</strong> {{ prediction }}</p>
+              <p class="mb-1"><strong>Confidence:</strong> {{ confidence * 100 | round(2) }}%</p>
+              <p class="mb-1"><strong>Risk percentage:</strong> {{ (confidence * 100) | round(1) }}%</p>
+              <p class="mb-1"><strong>Risk category:</strong> <span class="badge bg-warning text-dark">{{ risk_category or 'Moderate' }}</span></p>
+              <div class="progress mt-3" style="height: 10px;">
+                <div class="progress-bar bg-danger" role="progressbar" style="width: {{ (confidence * 100) | int }}%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="medical-card p-4 mb-4">
+        <h4 class="mb-3">Risk Overview</h4>
+        <canvas id="riskChart" width="100" height="140"></canvas>
+      </div>
+
+      <div class="medical-card p-4">
+        <h4 class="mb-3">Recommendations</h4>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item bg-transparent text-light-emphasis">Review retinal findings with a clinician for confirmation.</li>
+          <li class="list-group-item bg-transparent text-light-emphasis">Monitor cardiovascular markers and blood pressure trends.</li>
+          <li class="list-group-item bg-transparent text-light-emphasis">Maintain regular imaging follow-up for long-term monitoring.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+  const ctx = document.getElementById('riskChart');
+  if (ctx) {
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Low', 'Moderate', 'High'],
+        datasets: [{
+          data: [35, 30, 35],
+          backgroundColor: ['#22c55e', '#f59e0b', '#ef4444'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { labels: { color: '#e5eefb' } } }
+      }
+    });
+  }
+</script>
+{% endblock %}

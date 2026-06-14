@@ -51,8 +51,11 @@ class HybridRetinaModel:
 
     def extract_features(self, image_batch):
         """Extract feature vectors from the CNN model."""
+        if not self.cnn_model.built:
+            self.cnn_model.build((None, *self.input_shape))
+
         feature_model = tf.keras.Model(
-            inputs=self.cnn_model.input,
+            inputs=self.cnn_model.inputs[0],
             outputs=self.cnn_model.get_layer('feature_dense').output
         )
         return feature_model.predict(image_batch, verbose=0)

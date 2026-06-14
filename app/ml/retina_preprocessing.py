@@ -52,6 +52,7 @@ def augment_image(image, flip=True, rotate_range=15, brightness=0.1):
 
 def preprocess_retinal_image(image_path, augment=False, return_rgb=True):
     """Full preprocessing pipeline for a retinal image file path."""
+    print('[DEBUG] preprocessing started for file', image_path, flush=True)
     image = cv2.imread(image_path)
     if image is None:
         raise ValueError('Unable to read image from path: {}'.format(image_path))

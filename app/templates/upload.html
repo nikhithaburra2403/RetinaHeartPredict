@@ -8,13 +8,13 @@
         <h2 class="mb-3">Upload Retinal Image</h2>
         <p class="text-light-emphasis">Upload a JPG, JPEG, or PNG retinal image for analysis. The file is validated for type and size before it is stored in the uploads folder.</p>
 
-        <form method="post" enctype="multipart/form-data" class="mt-3" id="uploadForm">
+        <form method="post" action="{{ url_for('predict') }}" enctype="multipart/form-data" class="mt-3" id="uploadForm">
           <div class="mb-3">
             <label class="form-label">Choose retinal image</label>
             <input type="file" class="form-control" name="image" id="imageInput" accept=".jpg,.jpeg,.png" required>
             <div class="form-text text-light-emphasis">Maximum file size: 5 MB</div>
           </div>
-          <button class="btn btn-primary" type="submit">Upload & Analyze</button>
+          <button class="btn btn-primary" type="submit">Analyze</button>
         </form>
       </div>
     </div>

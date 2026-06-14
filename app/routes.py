@@ -71,7 +71,20 @@ def login():
         password = request.form.get('password', '')
 
         user = User.query.filter_by(email=email).first()
-        if user and bcrypt.check_password_hash(user.password, password):
+
+        if user:
+            password_ok = False
+
+            try:
+                password_ok = bcrypt.check_password_hash(user.password, password)
+            except ValueError:
+                # Support older records that were stored as plain text before bcrypt migration.
+                password_ok = (user.password == password)
+                if password_ok:
+                    user.password = bcrypt.generate_password_hash(password).decode('utf-8')
+                    DB.session.commit()
+
+        if user and password_ok:
             login_user(user)
             flash('Welcome back!', 'success')
             return redirect(url_for('upload'))
@@ -122,27 +135,36 @@ def upload():
 @app.route('/predict', methods=['POST'])
 @login_required
 def predict():
+    print('[DEBUG] route /predict entered', flush=True)
     if 'image' not in request.files:
-        return jsonify({'error': 'No image file uploaded.'}), 400
+        flash('No image file was uploaded.', 'danger')
+        return redirect(url_for('upload'))
 
     image_file = request.files['image']
     if image_file.filename == '':
-        return jsonify({'error': 'Please select a retinal image.'}), 400
+        flash('Please choose a retinal image to upload.', 'danger')
+        return redirect(url_for('upload'))
 
     if not allowed_file(image_file.filename):
-        return jsonify({'error': 'Only JPG, JPEG, and PNG files are allowed.'}), 400
+        flash('Only JPG, JPEG, and PNG files are allowed.', 'danger')
+        return redirect(url_for('upload'))
 
     if image_file.content_length and image_file.content_length > MAX_FILE_SIZE:
-        return jsonify({'error': 'File is too large. Maximum size is 5 MB.'}), 400
+        flash('File is too large. Maximum size is 5 MB.', 'danger')
+        return redirect(url_for('upload'))
 
     filename = secure_filename(image_file.filename)
     save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     image_file.save(save_path)
+    print(f'[DEBUG] file saved to {save_path}', flush=True)
 
     try:
+        print('[DEBUG] creating PredictionService', flush=True)
         service = PredictionService()
+        print('[DEBUG] model loaded for prediction', flush=True)
         result = service.predict_from_file(save_path)
 
+        print('[DEBUG] prediction completed', flush=True)
         record = Prediction(
             user_id=current_user.id,
             image_path=filename,
@@ -152,13 +174,22 @@ def predict():
         DB.session.add(record)
         DB.session.commit()
 
-        response = dict(result)
-        response['history_id'] = record.id
-        response['image_path'] = url_for('static', filename='uploads/' + filename)
-        response['download_report_url'] = url_for('download_report', prediction_id=record.id)
-        return jsonify(response)
+        print('[DEBUG] rendering result page', flush=True)
+        return render_template(
+            'result.html',
+            preview_url=url_for('static', filename='uploads/' + filename),
+            prediction=result['prediction_label'],
+            confidence=float(result['confidence_score']),
+            risk_category=result.get('risk_level', 'Moderate'),
+            download_report_url=url_for('download_report', prediction_id=record.id),
+        )
     except Exception as exc:
-        return jsonify({'error': 'Prediction failed.', 'details': str(exc)}), 500
+        import traceback
+        print('[DEBUG] prediction exception', flush=True)
+        traceback.print_exc()
+        print(f'[DEBUG] exception type={type(exc).__name__} message={exc}', flush=True)
+        flash('Prediction failed. Please try another image.', 'danger')
+        return redirect(url_for('upload'))
 
 
 @app.route('/download-report')

@@ -10,7 +10,7 @@ Copy .env.example to .env and update the values before deploying.
 
 ### Local run
 
-1. python -m pip install -r requirements.txt
+1.python  -m pip install -r requirements.txt
 2. python app.py
 
 ### Production run with Gunicorn
